@@ -1,0 +1,17 @@
+{
+  "name": "y-v2",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @y-v2/asana-analyser run dev",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "build": "pnpm -r run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

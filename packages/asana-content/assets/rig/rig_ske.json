@@ -1,0 +1,64 @@
+{
+  "frameRate": 24,
+  "name": "RigData",
+  "version": "5.6",
+  "compatibleVersion": "5.6",
+  "armature": [
+    {
+      "type": "Armature",
+      "frameRate": 24,
+      "name": "Rig",
+      "aabb": { "x": -60, "y": -100, "width": 120, "height": 150 },
+      "bone": [
+        { "name": "root" },
+        { "name": "torso", "parent": "root", "transform": { "y": -40 } },
+        { "name": "head", "parent": "torso", "transform": { "y": -30 } },
+        { "name": "armL", "parent": "torso", "transform": { "x": -20, "y": -10 } },
+        { "name": "armR", "parent": "torso", "transform": { "x": 20, "y": -10 } },
+        { "name": "legL", "parent": "root", "transform": { "x": -10, "y": 10 } },
+        { "name": "legR", "parent": "root", "transform": { "x": 10, "y": 10 } }
+      ],
+      "slot": [
+        { "name": "torso", "parent": "torso" },
+        { "name": "head", "parent": "head" },
+        { "name": "armL", "parent": "armL" },
+        { "name": "armR", "parent": "armR" },
+        { "name": "legL", "parent": "legL" },
+        { "name": "legR", "parent": "legR" }
+      ],
+      "skin": [
+        {
+          "name": "default",
+          "slot": [
+            {
+              "name": "torso",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 3, "scY": 5 } }]
+            },
+            {
+              "name": "head",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 2.5, "scY": 2.5 } }]
+            },
+            {
+              "name": "armL",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 4 } }]
+            },
+            {
+              "name": "armR",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 4 } }]
+            },
+            {
+              "name": "legL",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 5 } }]
+            },
+            {
+              "name": "legR",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 5 } }]
+            }
+          ]
+        }
+      ],
+      "ik": [],
+      "animation": []
+    }
+  ]
+}

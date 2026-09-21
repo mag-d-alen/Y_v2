@@ -1,0 +1,7 @@
+{
+  "name": "rig_tex",
+  "imagePath": "rig_tex.png",
+  "width": 8,
+  "height": 8,
+  "SubTexture": [{ "name": "rect", "x": 0, "y": 0, "width": 8, "height": 8 }]
+}

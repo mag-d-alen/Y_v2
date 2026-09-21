@@ -1,0 +1,26 @@
+{
+  "name": "@y-v2/asana-content",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./assets/*": "./assets/*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
+    "pixi-dragonbones-runtime": "^8.0.3",
+    "pixi.js": "^8.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}
