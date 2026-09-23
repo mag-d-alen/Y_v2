@@ -38,6 +38,11 @@ describe("SupabaseAsanaRepository getAsanaVariant", () => {
       muscle_annotations: [
         { muscle_id: "obliques-right", state: "working", role_description: "Side-bends the torso." },
       ],
+      rotation_annotations: [{ bone: "upperBack", direction: "right" }],
+      ground_contact_annotations: [{ point: "heelL" }],
+      load_annotations: [{ point: "heelL", load_fraction: 0.5 }],
+      body_contact_annotations: [{ point_a: "palmL", point_b: "bigToeL", contact_type: "grasp" }],
+      drishti_annotations: { point: "noseTip" },
     };
     const from = vi.fn(() => readBuilder({ data: row, error: null }));
     const client = { from } as unknown as SupabaseClient;
@@ -53,6 +58,11 @@ describe("SupabaseAsanaRepository getAsanaVariant", () => {
       muscleAnnotations: [
         { muscleId: "obliques-right", state: "working", roleDescription: "Side-bends the torso." },
       ],
+      rotationAnnotations: [{ bone: "upperBack", direction: "right" }],
+      groundContactAnnotations: [{ point: "heelL" }],
+      loadAnnotations: [{ point: "heelL", loadFraction: 0.5 }],
+      bodyContactAnnotations: [{ pointA: "palmL", pointB: "bigToeL", contactType: "grasp" }],
+      drishtiAnnotation: { point: "noseTip" },
     });
   });
 
@@ -98,6 +108,15 @@ describe("SupabaseAsanaRepository listAsanaVariants", () => {
 });
 
 describe("SupabaseAsanaRepository saveAsanaVariant", () => {
+  const EMPTY_ANNOTATIONS = {
+    muscleAnnotations: [],
+    rotationAnnotations: [],
+    groundContactAnnotations: [],
+    loadAnnotations: [],
+    bodyContactAnnotations: [],
+    drishtiAnnotation: null,
+  };
+
   it("finds or creates the Asana before inserting the Variant and Pose Data", async () => {
     const from = vi
       .fn()
@@ -111,11 +130,13 @@ describe("SupabaseAsanaRepository saveAsanaVariant", () => {
       sanskritName: "Vrksasana",
       variant: { tradition: "vinyasa", ashtangaSeries: null, label: "standard" },
       poseData: { bones: { root: { x: 0, y: 0, rotation: 0 } } },
+      ...EMPTY_ANNOTATIONS,
     });
 
     expect(from).toHaveBeenNthCalledWith(1, "asanas");
     expect(from).toHaveBeenNthCalledWith(2, "asana_variants");
     expect(from).toHaveBeenNthCalledWith(3, "pose_data");
+    expect(from).toHaveBeenCalledTimes(3);
   });
 
   it("attaches an Iyengar variant to the same Asana Trikonasana already resolves to, tagged with its Ashtanga series", async () => {
@@ -131,10 +152,70 @@ describe("SupabaseAsanaRepository saveAsanaVariant", () => {
       sanskritName: "Trikonasana",
       variant: { tradition: "iyengar", ashtangaSeries: 1, label: "standard" },
       poseData: { bones: { root: { x: 0, y: 0, rotation: 0 } } },
+      ...EMPTY_ANNOTATIONS,
     });
 
     expect(from).toHaveBeenNthCalledWith(1, "asanas");
     expect(from).toHaveBeenNthCalledWith(2, "asana_variants");
     expect(from).toHaveBeenNthCalledWith(3, "pose_data");
+    expect(from).toHaveBeenCalledTimes(3);
+  });
+
+  it("inserts every populated annotation table, in order, after Pose Data", async () => {
+    const from = vi
+      .fn()
+      .mockReturnValueOnce(insertThenSelectBuilder({ data: { id: "asana-1" }, error: null }))
+      .mockReturnValueOnce(insertThenSelectBuilder({ data: { id: "variant-1" }, error: null }))
+      .mockReturnValueOnce(insertOnlyBuilder({ error: null }))
+      .mockReturnValueOnce(insertOnlyBuilder({ error: null }))
+      .mockReturnValueOnce(insertOnlyBuilder({ error: null }))
+      .mockReturnValueOnce(insertOnlyBuilder({ error: null }))
+      .mockReturnValueOnce(insertOnlyBuilder({ error: null }))
+      .mockReturnValueOnce(insertOnlyBuilder({ error: null }))
+      .mockReturnValueOnce(insertOnlyBuilder({ error: null }));
+    const client = { from } as unknown as SupabaseClient;
+    const repository = new SupabaseAsanaRepository(client);
+
+    await repository.saveAsanaVariant({
+      sanskritName: "Trikonasana",
+      variant: { tradition: "ashtanga", ashtangaSeries: 1, label: "standard" },
+      poseData: { bones: { root: { x: 0, y: 0, rotation: 0 } } },
+      muscleAnnotations: [{ muscleId: "obliques-right", state: "working", roleDescription: "Side-bends." }],
+      rotationAnnotations: [{ bone: "upperBack", direction: "right" }],
+      groundContactAnnotations: [{ point: "heelL" }],
+      loadAnnotations: [{ point: "heelL", loadFraction: 0.5 }],
+      bodyContactAnnotations: [{ pointA: "palmL", pointB: "bigToeL", contactType: "grasp" }],
+      drishtiAnnotation: { point: "noseTip" },
+    });
+
+    expect(from).toHaveBeenNthCalledWith(1, "asanas");
+    expect(from).toHaveBeenNthCalledWith(2, "asana_variants");
+    expect(from).toHaveBeenNthCalledWith(3, "pose_data");
+    expect(from).toHaveBeenNthCalledWith(4, "muscle_annotations");
+    expect(from).toHaveBeenNthCalledWith(5, "rotation_annotations");
+    expect(from).toHaveBeenNthCalledWith(6, "ground_contact_annotations");
+    expect(from).toHaveBeenNthCalledWith(7, "load_annotations");
+    expect(from).toHaveBeenNthCalledWith(8, "body_contact_annotations");
+    expect(from).toHaveBeenNthCalledWith(9, "drishti_annotations");
+    expect(from).toHaveBeenCalledTimes(9);
+  });
+
+  it("skips inserting a table whose annotation list is empty or whose Drishti Annotation is null", async () => {
+    const from = vi
+      .fn()
+      .mockReturnValueOnce(insertThenSelectBuilder({ data: { id: "asana-1" }, error: null }))
+      .mockReturnValueOnce(insertThenSelectBuilder({ data: { id: "variant-1" }, error: null }))
+      .mockReturnValueOnce(insertOnlyBuilder({ error: null }));
+    const client = { from } as unknown as SupabaseClient;
+    const repository = new SupabaseAsanaRepository(client);
+
+    await repository.saveAsanaVariant({
+      sanskritName: "Trikonasana",
+      variant: { tradition: "ashtanga", ashtangaSeries: 1, label: "standard" },
+      poseData: { bones: { root: { x: 0, y: 0, rotation: 0 } } },
+      ...EMPTY_ANNOTATIONS,
+    });
+
+    expect(from).toHaveBeenCalledTimes(3);
   });
 });

@@ -11,48 +11,84 @@
       "aabb": { "x": -60, "y": -100, "width": 120, "height": 150 },
       "bone": [
         { "name": "root" },
-        { "name": "torso", "parent": "root", "transform": { "y": -40 } },
-        { "name": "head", "parent": "torso", "transform": { "y": -30 } },
-        { "name": "armL", "parent": "torso", "transform": { "x": -20, "y": -10 } },
-        { "name": "armR", "parent": "torso", "transform": { "x": 20, "y": -10 } },
-        { "name": "legL", "parent": "root", "transform": { "x": -10, "y": 10 } },
-        { "name": "legR", "parent": "root", "transform": { "x": 10, "y": 10 } }
+        { "name": "pelvis", "parent": "root", "transform": { "y": -14 } },
+        { "name": "lowerBack", "parent": "pelvis", "transform": { "y": -13 } },
+        { "name": "upperBack", "parent": "lowerBack", "transform": { "y": -13 } },
+        { "name": "head", "parent": "upperBack", "transform": { "y": -30 } },
+        { "name": "upperArmL", "parent": "upperBack", "transform": { "x": -20, "y": -10 } },
+        { "name": "upperArmR", "parent": "upperBack", "transform": { "x": 20, "y": -10 } },
+        { "name": "forearmL", "parent": "upperArmL", "transform": { "y": 20 } },
+        { "name": "forearmR", "parent": "upperArmR", "transform": { "y": 20 } },
+        { "name": "thighL", "parent": "root", "transform": { "x": -10, "y": 10 } },
+        { "name": "thighR", "parent": "root", "transform": { "x": 10, "y": 10 } },
+        { "name": "shinL", "parent": "thighL", "transform": { "y": 20 } },
+        { "name": "shinR", "parent": "thighR", "transform": { "y": 20 } }
       ],
       "slot": [
-        { "name": "torso", "parent": "torso" },
+        { "name": "pelvis", "parent": "pelvis" },
+        { "name": "lowerBack", "parent": "lowerBack" },
+        { "name": "upperBack", "parent": "upperBack" },
         { "name": "head", "parent": "head" },
-        { "name": "armL", "parent": "armL" },
-        { "name": "armR", "parent": "armR" },
-        { "name": "legL", "parent": "legL" },
-        { "name": "legR", "parent": "legR" }
+        { "name": "upperArmL", "parent": "upperArmL" },
+        { "name": "upperArmR", "parent": "upperArmR" },
+        { "name": "forearmL", "parent": "forearmL" },
+        { "name": "forearmR", "parent": "forearmR" },
+        { "name": "thighL", "parent": "thighL" },
+        { "name": "thighR", "parent": "thighR" },
+        { "name": "shinL", "parent": "shinL" },
+        { "name": "shinR", "parent": "shinR" }
       ],
       "skin": [
         {
           "name": "default",
           "slot": [
             {
-              "name": "torso",
-              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 3, "scY": 5 } }]
+              "name": "pelvis",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 3, "scY": 1.7 } }]
+            },
+            {
+              "name": "lowerBack",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 3, "scY": 1.7 } }]
+            },
+            {
+              "name": "upperBack",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 3, "scY": 1.7 } }]
             },
             {
               "name": "head",
               "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 2.5, "scY": 2.5 } }]
             },
             {
-              "name": "armL",
-              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 4 } }]
+              "name": "upperArmL",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 2 } }]
             },
             {
-              "name": "armR",
-              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 4 } }]
+              "name": "upperArmR",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 2 } }]
             },
             {
-              "name": "legL",
-              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 5 } }]
+              "name": "forearmL",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 2 } }]
             },
             {
-              "name": "legR",
-              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 5 } }]
+              "name": "forearmR",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 2 } }]
+            },
+            {
+              "name": "thighL",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 2.5 } }]
+            },
+            {
+              "name": "thighR",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 2.5 } }]
+            },
+            {
+              "name": "shinL",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 2.5 } }]
+            },
+            {
+              "name": "shinR",
+              "display": [{ "name": "rect", "path": "rect", "type": "image", "transform": { "scX": 1.5, "scY": 2.5 } }]
             }
           ]
         }

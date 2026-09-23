@@ -1,0 +1,3 @@
+# Asana content lives in Supabase (Postgres), not static bundled files
+
+Asana, Asana Variant, Pose Data, and Muscle Annotation records need real CRUD for the internal expert-review workflow, queryable/filterable content (by tradition, difficulty), and the ability to update content without an app release. A User Profile with accounts and a premium tier already requires a backend for auth and payments, so the marginal cost of also storing asana content there is low. Supabase (managed Postgres) is the chosen backend. The shared DragonBones armature and Muscle Atlas art remain static assets — they don't change per asana and don't need database storage.

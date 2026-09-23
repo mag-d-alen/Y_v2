@@ -1,0 +1,3 @@
+# DragonBones as the rig/atlas authoring tool, runtime, and Pose Data format
+
+The app needs a shared skeletal rig, a reusable muscle-shape atlas bound to that rig, and a compact pose representation that can be authored once for a Reference Figure and computed live for a Student Figure. DragonBones (free, open-source 2D skeletal animation tooling) provides all three: its editor builds the armature (Rig) and skins muscle meshes (Muscle Atlas) to it, and its native pose/animation schema is used directly as Pose Data rather than inventing a bespoke format. Chosen over Spine for licensing reasons (Spine is commercial at team scale). This ties the rendering pipeline to DragonBones' runtime and data format — a real but accepted lock-in given the fit.

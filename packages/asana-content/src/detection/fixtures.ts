@@ -1,0 +1,61 @@
+import type { DetectedJoints } from "../domain.js";
+
+export const FIXTURE_DETECTED_JOINTS: Record<string, DetectedJoints> = {
+  "fixtures/model-photos/trikonasana-standard.jpg": {
+    personDetected: true,
+    joints: {
+      nose: { x: 0, y: 20, confidence: 0.95 },
+      leftShoulder: { x: -15, y: 40, confidence: 0.92 },
+      rightShoulder: { x: 15, y: 40, confidence: 0.93 },
+      leftElbow: { x: -37, y: 35, confidence: 0.91 },
+      rightElbow: { x: 37, y: 50, confidence: 0.9 },
+      leftWrist: { x: -60, y: 30, confidence: 0.88 },
+      rightWrist: { x: 60, y: 60, confidence: 0.9 },
+      leftHip: { x: -10, y: 100, confidence: 0.94 },
+      rightHip: { x: 10, y: 100, confidence: 0.94 },
+      leftKnee: { x: -10, y: 130, confidence: 0.9 },
+      rightKnee: { x: 20, y: 130, confidence: 0.89 },
+      leftAnkle: { x: -10, y: 160, confidence: 0.85 },
+      rightAnkle: { x: 30, y: 160, confidence: 0.87 },
+    },
+  },
+  "fixtures/model-photos/no-person-in-frame.jpg": {
+    personDetected: false,
+    joints: {},
+  },
+  "fixtures/model-photos/low-confidence-detection.jpg": {
+    personDetected: true,
+    joints: {
+      nose: { x: 0, y: 20, confidence: 0.95 },
+      leftShoulder: { x: -15, y: 40, confidence: 0.92 },
+      rightShoulder: { x: 15, y: 40, confidence: 0.93 },
+      leftElbow: { x: -37, y: 35, confidence: 0.91 },
+      rightElbow: { x: 37, y: 50, confidence: 0.9 },
+      leftWrist: { x: -60, y: 30, confidence: 0.88 },
+      rightWrist: { x: 60, y: 60, confidence: 0.9 },
+      leftHip: { x: -10, y: 100, confidence: 0.94 },
+      rightHip: { x: 10, y: 100, confidence: 0.94 },
+      leftKnee: { x: -10, y: 130, confidence: 0.9 },
+      rightKnee: { x: 20, y: 130, confidence: 0.89 },
+      leftAnkle: { x: -10, y: 160, confidence: 0.85 },
+      rightAnkle: { x: 30, y: 160, confidence: 0.22 },
+    },
+  },
+  "fixtures/model-photos/missing-joint-detection.jpg": {
+    personDetected: true,
+    joints: {
+      nose: { x: 0, y: 20, confidence: 0.95 },
+      leftShoulder: { x: -15, y: 40, confidence: 0.92 },
+      rightShoulder: { x: 15, y: 40, confidence: 0.93 },
+      leftElbow: { x: -37, y: 35, confidence: 0.91 },
+      rightElbow: { x: 37, y: 50, confidence: 0.9 },
+      leftWrist: { x: -60, y: 30, confidence: 0.88 },
+      rightWrist: { x: 60, y: 60, confidence: 0.9 },
+      leftHip: { x: -10, y: 100, confidence: 0.94 },
+      rightHip: { x: 10, y: 100, confidence: 0.94 },
+      leftKnee: { x: -10, y: 130, confidence: 0.9 },
+      rightKnee: { x: 20, y: 130, confidence: 0.89 },
+      leftAnkle: { x: -10, y: 160, confidence: 0.85 },
+    },
+  },
+};

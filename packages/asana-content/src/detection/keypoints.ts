@@ -1,0 +1,27 @@
+export const JOINT_NAMES = [
+  "nose",
+  "leftShoulder",
+  "rightShoulder",
+  "leftElbow",
+  "rightElbow",
+  "leftWrist",
+  "rightWrist",
+  "leftPinky",
+  "rightPinky",
+  "leftIndex",
+  "rightIndex",
+  "leftThumb",
+  "rightThumb",
+  "leftHip",
+  "rightHip",
+  "leftKnee",
+  "rightKnee",
+  "leftAnkle",
+  "rightAnkle",
+  "leftHeel",
+  "rightHeel",
+  "leftFootIndex",
+  "rightFootIndex",
+] as const;
+
+export type JointName = (typeof JOINT_NAMES)[number];

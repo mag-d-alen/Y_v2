@@ -1,0 +1,3 @@
+# Asana education is free; the photo-comparison feature is premium
+
+The Homepage and Pose view (Reference Figures, layers, tap-to-learn muscle info) are free — this is the app's educational core and its acquisition/discovery surface. The User Profile, where a student photographs themselves and gets a comparison against the Reference Figure, is gated behind a premium tier. A possible future "assisting" learning dimension — helping a student move toward better form while still respecting the anatomy-only, non-diagnostic framing — is a candidate for a further, separate payment tier, but is explicitly out of scope for v1.

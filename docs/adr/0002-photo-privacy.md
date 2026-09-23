@@ -1,0 +1,3 @@
+# Raw student photos are never persisted or uploaded
+
+The self-photograph feature is a sensitive data source: photos of a student's body, taken during unsupervised practice. The photo is processed on-device purely to derive Pose Data via the joint detector, then discarded — never written to storage, never sent to a server. Only the derived Pose Data (a small bone-transform record, not an image) is saved to the user's profile, and only for users who opt in. This trades away the ability to re-derive Pose Data from a bad detection later, in exchange for the photo never existing as a stored artifact anywhere.

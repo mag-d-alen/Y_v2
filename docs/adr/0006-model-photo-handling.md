@@ -1,0 +1,3 @@
+# Model photos are processed locally and never persisted, displayed, or committed
+
+Like student photos (ADR-0002), Model Photos used to derive an Asana Variant's Pose Data are a transient input, not a stored asset. They're supplied locally to the asana analyser, used only to extract Pose Data via joint detection, and are never displayed in the product, never stored in the database or an asset store, and never committed to the repository. They're deleted once Pose Data has been extracted and verified for that Variant. Only the derived Pose Data — the source of truth per `CONTEXT.md` — is retained.

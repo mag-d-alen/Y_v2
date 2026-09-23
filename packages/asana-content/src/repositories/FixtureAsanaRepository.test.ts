@@ -27,6 +27,12 @@ describe("FixtureAsanaRepository", () => {
       sanskritName: "Vrksasana",
       variant: { tradition: "vinyasa", ashtangaSeries: null, label: "standard" },
       poseData,
+      muscleAnnotations: [],
+      rotationAnnotations: [],
+      groundContactAnnotations: [],
+      loadAnnotations: [],
+      bodyContactAnnotations: [],
+      drishtiAnnotation: null,
     });
 
     expect(repository.savedVariants).toEqual([
@@ -34,6 +40,12 @@ describe("FixtureAsanaRepository", () => {
         sanskritName: "Vrksasana",
         variant: { tradition: "vinyasa", ashtangaSeries: null, label: "standard" },
         poseData,
+        muscleAnnotations: [],
+        rotationAnnotations: [],
+        groundContactAnnotations: [],
+        loadAnnotations: [],
+        bodyContactAnnotations: [],
+        drishtiAnnotation: null,
       },
     ]);
   });
