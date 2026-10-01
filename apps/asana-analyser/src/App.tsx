@@ -14,84 +14,103 @@ import { DraftReviewStep } from "./steps/DraftReviewStep.js";
 import { MetadataStep } from "./steps/MetadataStep.js";
 import { HandAuthoringStep } from "./steps/HandAuthoringStep.js";
 import { PublishStep } from "./steps/PublishStep.js";
-import type { VariantMetadata, WizardState } from "./wizardState.js";
+import type { PhotoInput, VariantMetadata, WizardState } from "./wizardState.js";
 
 const detector = new HttpJointDetector();
 
+const EMPTY_PHOTO_INPUT: PhotoInput = {
+  mainFolderPath: "",
+  otherSideFolderPath: null,
+  assumeSymmetric: false,
+  groundContactPoints: [],
+  facingDirection: "camera",
+};
+
+function describePhotoFolders(photos: PhotoInput): string {
+  return photos.otherSideFolderPath
+    ? `${photos.mainFolderPath} (main), ${photos.otherSideFolderPath} (other side)`
+    : photos.mainFolderPath;
+}
+
 export function App() {
-  const [state, setState] = useState<WizardState>({ step: "photo-input", folderPath: "", error: null });
+  const [state, setState] = useState<WizardState>({ step: "photo-input", initial: EMPTY_PHOTO_INPUT, error: null });
   const [publishStatus, setPublishStatus] = useState<"idle" | "publishing" | "error">("idle");
   const [publishError, setPublishError] = useState<string | null>(null);
 
-  async function runDetection(folderPath: string) {
-    setState({ step: "detecting", folderPath });
+  async function runDetection(photos: PhotoInput) {
+    setState({ step: "detecting", photos });
     try {
-      const photoPaths = await fetchPhotoPathsInFolder(folderPath);
-      if (photoPaths.length === 0) {
+      const mainPhotoPaths = await fetchPhotoPathsInFolder(photos.mainFolderPath);
+      if (mainPhotoPaths.length === 0) {
         setState({
           step: "photo-input",
-          folderPath,
-          error: `No .jpg/.jpeg/.png photos found in "${folderPath}"`,
+          initial: photos,
+          error: `No .jpg/.jpeg/.png photos found in "${photos.mainFolderPath}"`,
         });
         return;
       }
 
-      const result = await runDraftDetection(detector, photoPaths);
-      if (!result.accepted) {
-        setState({ step: "rejected", folderPath, reason: result.rejectionReason });
+      const otherSidePhotoPaths = photos.otherSideFolderPath
+        ? await fetchPhotoPathsInFolder(photos.otherSideFolderPath)
+        : [];
+
+      const result = await runDraftDetection(detector, [...mainPhotoPaths, ...otherSidePhotoPaths], {
+        assumeSymmetric: photos.assumeSymmetric,
+        groundContactPoints: photos.groundContactPoints,
+        facingDirection: photos.facingDirection,
+      });
+
+      if (!result.resolved) {
+        setState({ step: "rejected", photos, rejection: result });
         return;
       }
 
-      setState({ step: "draft-review", folderPath, poseData: result.poseData });
+      setState({ step: "draft-review", photos, poseData: result.poseData, mirroredBones: result.mirroredBones });
     } catch (error) {
-      setState({ step: "photo-input", folderPath, error: error instanceof Error ? error.message : String(error) });
+      setState({ step: "photo-input", initial: photos, error: error instanceof Error ? error.message : String(error) });
     }
   }
 
   if (state.step === "photo-input") {
-    return <PhotoInputStep initialFolderPath={state.folderPath} error={state.error} onSubmit={runDetection} />;
+    return <PhotoInputStep initial={state.initial} error={state.error} onSubmit={runDetection} />;
   }
 
   if (state.step === "detecting") {
-    return <p>Running detection on photos in "{state.folderPath}"…</p>;
+    return <p>Running detection on photos in "{describePhotoFolders(state.photos)}"…</p>;
   }
 
   if (state.step === "rejected") {
-    return (
-      <RejectedStep
-        reason={state.reason}
-        onRetry={() => setState({ step: "photo-input", folderPath: state.folderPath, error: null })}
-      />
-    );
+    const handleRetry = () => setState({ step: "photo-input", initial: state.photos, error: null });
+    return <RejectedStep rejection={state.rejection} onRetry={handleRetry} />;
   }
 
   if (state.step === "draft-review") {
+    const handleAccept = () => setState({ step: "metadata", photos: state.photos, poseData: state.poseData });
+    const handleReject = () => setState({ step: "photo-input", initial: state.photos, error: null });
     return (
       <DraftReviewStep
         poseData={state.poseData}
-        onAccept={() => setState({ step: "metadata", folderPath: state.folderPath, poseData: state.poseData })}
-        onReject={() => setState({ step: "photo-input", folderPath: state.folderPath, error: null })}
+        mirroredBones={state.mirroredBones}
+        onAccept={handleAccept}
+        onReject={handleReject}
       />
     );
   }
 
   if (state.step === "metadata") {
-    const { folderPath, poseData } = state;
-    return (
-      <MetadataStep
-        onSubmit={(metadata: VariantMetadata) =>
-          setState({ step: "hand-authoring", folderPath, poseData, metadata, draft: createHandAuthoredContentDraft() })
-        }
-      />
-    );
+    const { photos, poseData } = state;
+    const handleMetadataSubmit = (metadata: VariantMetadata) =>
+      setState({ step: "hand-authoring", photos, poseData, metadata, draft: createHandAuthoredContentDraft() });
+    return <MetadataStep onSubmit={handleMetadataSubmit} />;
   }
 
   if (state.step === "hand-authoring") {
+    const handleDraftChange = (draft: typeof state.draft) => setState({ ...state, draft });
     return (
       <HandAuthoringStep
-        folderPath={state.folderPath}
+        folderPath={describePhotoFolders(state.photos)}
         draft={state.draft}
-        onChange={(draft) => setState({ ...state, draft })}
+        onChange={handleDraftChange}
         onContinue={() => {
           const content: AsanaVariantContent = finalizeHandAuthoredContent(state.draft, {
             asana: { sanskritName: state.metadata.sanskritName },
@@ -132,6 +151,7 @@ export function App() {
     );
   }
 
+  const handleAuthorAnother = () => setState({ step: "photo-input", initial: EMPTY_PHOTO_INPUT, error: null });
   return (
     <section>
       <h2>Published</h2>
@@ -139,7 +159,7 @@ export function App() {
         The Asana Variant was published successfully. Delete the Model Photos from disk now — this tool never
         uploaded or stored them anywhere.
       </p>
-      <button type="button" onClick={() => setState({ step: "photo-input", folderPath: "", error: null })}>
+      <button type="button" onClick={handleAuthorAnother}>
         Author another Variant
       </button>
     </section>

@@ -23,7 +23,7 @@
     "@tensorflow/tfjs-converter": "^4.22.0",
     "@tensorflow/tfjs-core": "^4.22.0",
     "pixi-dragonbones-runtime": "^8.0.3",
-    "pixi.js": "^8.3.0",
+    "pixi.js": "8.9.1",
     "sharp": "^0.35.4"
   },
   "devDependencies": {

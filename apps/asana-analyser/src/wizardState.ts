@@ -1,6 +1,8 @@
+import type { RejectedDraftDetection } from "@y-v2/asana-content";
 import type {
   AsanaVariantContent,
-  DetectionRejectionReason,
+  ContactPoint,
+  FacingDirection,
   HandAuthoredContentDraft,
   PoseData,
   Tradition,
@@ -13,24 +15,26 @@ export interface VariantMetadata {
   label: string;
 }
 
+export interface PhotoInput {
+  mainFolderPath: string;
+  otherSideFolderPath: string | null;
+  assumeSymmetric: boolean;
+  groundContactPoints: ContactPoint[];
+  facingDirection: FacingDirection;
+}
+
 export type WizardState =
-  | { step: "photo-input"; folderPath: string; error: string | null }
-  | { step: "detecting"; folderPath: string }
-  | { step: "rejected"; folderPath: string; reason: DetectionRejectionReason }
-  | { step: "draft-review"; folderPath: string; poseData: PoseData }
-  | { step: "metadata"; folderPath: string; poseData: PoseData }
+  | { step: "photo-input"; initial: PhotoInput; error: string | null }
+  | { step: "detecting"; photos: PhotoInput }
+  | { step: "rejected"; photos: PhotoInput; rejection: RejectedDraftDetection }
+  | { step: "draft-review"; photos: PhotoInput; poseData: PoseData; mirroredBones: string[] }
+  | { step: "metadata"; photos: PhotoInput; poseData: PoseData }
   | {
       step: "hand-authoring";
-      folderPath: string;
+      photos: PhotoInput;
       poseData: PoseData;
       metadata: VariantMetadata;
       draft: HandAuthoredContentDraft;
     }
   | { step: "publish"; content: AsanaVariantContent }
   | { step: "published" };
-
-export const REJECTION_MESSAGES: Record<DetectionRejectionReason, string> = {
-  "no-person-detected": "No person was detected in these photos. Try a clearer, fully-in-frame photo.",
-  "missing-required-joint": "The detector couldn't read one of the required joints. Try a photo with the full body visible.",
-  "low-confidence-joint": "The detector read a required joint with low confidence. Try a sharper or better-lit photo.",
-};

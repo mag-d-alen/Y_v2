@@ -1,22 +1,17 @@
-import { evaluateDetectedJoints, type DetectionRejectionReason } from "../detection/evaluateDetectedJoints.js";
-import { mapDetectedJointsToPoseData } from "../detection/mapDetectedJointsToPoseData.js";
-import type { PoseData } from "../domain.js";
+import {
+  resolveDraftPoseData,
+  type DraftPoseDataResolution,
+  type ResolveDraftPoseDataOptions,
+} from "../detection/resolveDraftPoseData.js";
 import type { JointDetector } from "../JointDetector.js";
 
-export type DraftDetectionResult =
-  | { accepted: true; poseData: PoseData }
-  | { accepted: false; rejectionReason: DetectionRejectionReason };
+export type DraftDetectionResult = DraftPoseDataResolution;
 
 export async function runDraftDetection(
   detector: JointDetector,
   photoPaths: string[],
+  options: ResolveDraftPoseDataOptions,
 ): Promise<DraftDetectionResult> {
   const detectedJoints = await detector.detect(photoPaths);
-  const evaluation = evaluateDetectedJoints(detectedJoints);
-
-  if (!evaluation.accepted) {
-    return evaluation;
-  }
-
-  return { accepted: true, poseData: mapDetectedJointsToPoseData(detectedJoints) };
+  return resolveDraftPoseData(detectedJoints, options);
 }
